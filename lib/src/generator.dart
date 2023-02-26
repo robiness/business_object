@@ -20,16 +20,24 @@ class BusinessFormGenerator {
     var result = await session.getUnitElement(file.path);
     if (result is UnitElementResult) {
       CompilationUnitElement element = result.element;
-      _createFile(file);
-      printMembers(element);
+      final formFile = _createFile(file);
+      _addImports(formFile, file);
     }
   }
 
   /// Creates a file with the model name and a _form suffix.
-  void _createFile(File modelFile) {
-    File newFile = File(
-        '${modelFile.parent.path}/${modelFile.nameWithoutExtension}_form.dart');
-    newFile.createSync();
+  File _createFile(File modelFile) {
+    return File(
+        '${modelFile.parent.path}/${modelFile.nameWithoutExtension}_form.dart')
+      ..createSync();
+  }
+
+  void _addImports(File formFile, File modelFile) {
+    formFile.writeAsStringSync('''
+import 'package:business_object/business_object.dart';
+
+import '${modelFile.name}';
+    ''');
   }
 }
 

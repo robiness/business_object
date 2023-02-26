@@ -1,4 +1,5 @@
 import 'package:business_object/src/generator.dart';
+import 'package:dartx/dartx_io.dart';
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:test/test.dart';
@@ -39,8 +40,17 @@ void main() {
       final generator = BusinessFormGenerator();
       await generator.generateModel(modelFile);
 
+      //TODO Better test for imports per AST
       expect(formFile.readAsLinesSync().first,
           'import \'package:business_object/business_object.dart\';');
+    });
+    test('The actual model file gets imported', () async {
+      final generator = BusinessFormGenerator();
+      await generator.generateModel(modelFile);
+
+      //TODO Better test for imports per AST
+      expect(formFile.readAsLinesSync().third, 'import \'invoice.dart\';');
+      print(formFile.readAsStringSync());
     });
   });
 }
