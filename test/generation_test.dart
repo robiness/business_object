@@ -24,7 +24,7 @@ void main() {
     formFile.deleteSync(recursive: true);
   });
 
-  group('BusinessModelTest', () {
+  group('Build BusinessForm file', () {
     test('A new file is created with the name of the model and a _form suffix',
         () async {
       expect(tmp.fileNames, ['invoice.dart']);
@@ -55,19 +55,24 @@ void main() {
       final analyzer = await formFile.analyze();
       final classElement = await analyzer.classElement();
       expect(
-        classElement.displayName,
+        classElement.thisType.element.name,
         'InvoiceForm',
       );
     });
-    test('The created class extends the correct class', () async {
+    test('The created class extends BusinessFormObject<T>', () async {
       await modelFile.generateBusinessObject();
       final analyzer = await formFile.analyze();
-      final classElement = await analyzer.classElement();
-      print(classElement);
-      // expect(
-      //   classElement.interfaces,
-      //   'InvoiceForm',
-      // );
+      final superclass =
+          analyzer.classDeclaration().first.extendsClause?.superclass;
+      expect(
+        superclass?.name.name,
+        'BusinessFormObject',
+      );
+      expect(
+        superclass?.typeArguments?.arguments.first.toSource(),
+        'Invoice',
+      );
+      print(formFile.readAsStringSync());
     });
   });
 }

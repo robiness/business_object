@@ -36,6 +36,14 @@ class FileAnalyzer {
     return [];
   }
 
+  Iterable<ClassDeclaration> classDeclaration() {
+    final test = session.getParsedUnit(file.path);
+    if (test is ParsedUnitResult) {
+      return test.unit.declarations.reversed.whereType<ClassDeclaration>();
+    }
+    return [];
+  }
+
   Iterable<String> get importsAsStrings => imports.map((e) => e.toSource());
 
   Future<ClassElement> classElement() async {
