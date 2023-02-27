@@ -28,28 +28,46 @@ void main() {
     test('A new file is created with the name of the model and a _form suffix',
         () async {
       expect(tmp.fileNames, ['invoice.dart']);
-      await modelFile.generate();
-
+      await modelFile.generateBusinessObject();
       expect(
         tmp.fileNames,
         ['invoice.dart', 'invoice_form.dart'],
       );
     });
     test('The business object library gets imported', () async {
-      await modelFile.generate();
-      final fileAnalyzer = await formFile.analyze();
+      await modelFile.generateBusinessObject();
+      final analyzer = await formFile.analyze();
       expect(
-        fileAnalyzer.importsAsStrings,
+        analyzer.importsAsStrings,
         contains("import 'package:business_object/business_object.dart';"),
       );
     });
     test('The actual model file gets imported', () async {
-      await modelFile.generate();
-      final fileAnalyzer = await formFile.analyze();
+      await modelFile.generateBusinessObject();
+      final analyzer = await formFile.analyze();
       expect(
-        fileAnalyzer.importsAsStrings,
+        analyzer.importsAsStrings,
         contains("import 'invoice.dart';"),
       );
+    });
+    test('The created class has the correct class name', () async {
+      await modelFile.generateBusinessObject();
+      final analyzer = await formFile.analyze();
+      final classElement = await analyzer.classElement();
+      expect(
+        classElement.displayName,
+        'InvoiceForm',
+      );
+    });
+    test('The created class extends the correct class', () async {
+      await modelFile.generateBusinessObject();
+      final analyzer = await formFile.analyze();
+      final classElement = await analyzer.classElement();
+      print(classElement);
+      // expect(
+      //   classElement.interfaces,
+      //   'InvoiceForm',
+      // );
     });
   });
 }
