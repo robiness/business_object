@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:analyzer/dart/element/element.dart';
 import 'package:business_object/src/file_analyzer.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:dartx/dartx_io.dart';
 
 class BusinessFormGenerator {
@@ -32,7 +34,12 @@ class BusinessFormGenerator {
 
   Future<void> _writeFormFile() async {
     _addImports();
-    await _createClass();
+
+    final classElements = await analyzer.classElements();
+    for (final classElement in classElements) {
+      await _createClassDeclaration(classElement);
+    }
+
     _writeFile();
   }
 
@@ -51,25 +58,91 @@ import '${modelFile.name}';
     ''';
   }
 
-  Future<void> _createClass() async {
-    final className = (await analyzer.classElement()).displayName;
-    _content += '''
-\nclass ${className}Form extends BusinessFormObject<$className> {
-  ${className}Form({required super.content, required super.label});
+  /// Creates the actual business form class for a model class.
+  Future<void> _createClassDeclaration(ClassElement classElement) async {
+    final className = classElement.displayName;
+    final modelName = className.decapitalize();
 
-  @override
-  BusinessFormObject<${className}> create(${className}? model) {
-    CREATE_CONTENT
+    final StringBuffer constructorArguments = StringBuffer();
+    final StringBuffer fieldDeclarations = StringBuffer();
+    final StringBuffer businessValuesAssignments = StringBuffer();
+
+    for (final field in classElement.fields) {
+      constructorArguments.write(_getConstructorArgument(field));
+      fieldDeclarations.write(_getFieldDeclaration(field));
+      businessValuesAssignments
+          .write(_getBusinessValuesAssignment(field, className, modelName));
+    }
+
+    _content += '''
+\nclass ${className}Form extends BusinessFormData<$className> {
+  ${className}Form({
+  required super.label,
+  $constructorArguments
+  }) : ${_getSuperConstructor(classElement)};
+
+  $fieldDeclarations
+
+  static BusinessFormData<$className> from$className($className? $modelName) {
+  return ${className}Form(
+      label: '$className',
+    $businessValuesAssignments
+    );
   }
 }''';
   }
 
+  String _getConstructorArgument(FieldElement field) {
+    // required this.name,
+    return 'required this.${field.name},';
+  }
+
+  String _getSuperConstructor(ClassElement classElement) {
+    // super(content: [name, amount, customer, status]),
+    return 'super(content: [${classElement.fields.map((e) => e.name).join(', ')}])';
+  }
+
+  String _getFieldDeclaration(FieldElement field) {
+    if (field.isObject) {
+      return 'BusinessFormData<${field.type}?> ${field.name};';
+    }
+
+    return 'BusinessFormValue<${field.type}?> ${field.name};';
+  }
+
+  String _getBusinessValuesAssignment(
+      FieldElement field, String className, String modelName) {
+    if (field.isObject) {
+      return '''
+${field.name}: ${field.type}Form.from${field.name.capitalize()}($modelName?.${field.name}),
+''';
+    }
+    return '''
+${field.name}: BusinessFormValue(
+label: '${field.name}',
+initialValue: $modelName?.${field.name},
+),
+''';
+  }
+
   void _writeFile() {
-    formFile.writeAsStringSync(_content);
+    final formattedContent = DartFormatter().format(_content);
+    formFile.writeAsStringSync(formattedContent);
   }
 }
 
 extension GenerateExtension on File {
   Future<BusinessFormGenerator> generateBusinessObject() async =>
       BusinessFormGenerator.generateModel(this);
+}
+
+extension FieldElementExtensions on FieldElement {
+  bool get isObject {
+    return !type.isDartCoreString &&
+        !type.isDartCoreInt &&
+        !type.isDartCoreDouble &&
+        !type.isDartCoreBool &&
+        // First recherche show that enums have an ordinal unequal to 1.
+        type.element!.kind.ordinal == 1;
+  }
 }

@@ -5,7 +5,7 @@ import 'package:business_object/business_object.dart';
 
 import 'invoice.dart';
 
-class InvoiceForm extends BusinessFormObject<Invoice> {
+class InvoiceForm extends BusinessFormData<Invoice> {
   InvoiceForm({
     required super.label,
     required this.name,
@@ -14,56 +14,51 @@ class InvoiceForm extends BusinessFormObject<Invoice> {
     required this.status,
   }) : super(content: [name, amount, customer, status]);
 
-  final BusinessFormValue<String> name;
-  final BusinessFormValue<int> amount;
-  final BusinessFormValue<Customer?> customer;
-  final BusinessFormValue<InvoiceStatus> status;
+  final BusinessFormValue<String?> name;
+  final BusinessFormValue<int?> amount;
+  final BusinessFormData<Customer?> customer;
+  final BusinessFormValue<InvoiceStatus?> status;
 
-  @override
-  BusinessFormObject<Invoice> create(Invoice? invoice) {
+  static BusinessFormData<Invoice> fromInvoice(Invoice? invoice) {
     return InvoiceForm(
       label: 'invoice',
-      name: BusinessFormValue(
+      name: BusinessFormValue<String?>(
         label: 'name',
-        initialValue: invoice?.name ?? '',
+        initialValue: invoice?.name,
       ),
       amount: BusinessFormValue(
-        label: 'name',
-        initialValue: invoice?.amount ?? 5,
+        label: 'amount',
+        initialValue: invoice?.amount,
       ),
-      customer: BusinessFormValue(
-        label: 'name',
-        initialValue: invoice?.customer,
-      ),
+      customer: CustomerBusinessObject.fromCustomer(invoice?.customer),
       status: BusinessFormValue(
-        label: 'name',
-        initialValue: invoice?.status ?? InvoiceStatus.pending,
+        label: 'status',
+        initialValue: invoice?.status,
       ),
     );
   }
 }
 
-class CustomerBusinessObject extends BusinessFormObject<Customer> {
+class CustomerBusinessObject extends BusinessFormData<Customer> {
   CustomerBusinessObject({
     required super.label,
     required this.name,
     required this.address,
   }) : super(content: [name, address]);
 
-  final BusinessFormValue<String> name;
-  final BusinessFormValue<String> address;
+  final BusinessFormValue<String?> name;
+  final BusinessFormValue<String?> address;
 
-  @override
-  BusinessFormObject<Customer> create(Customer? model) {
+  static BusinessFormData<Customer> fromCustomer(Customer? model) {
     return CustomerBusinessObject(
       label: 'customer',
       name: BusinessFormValue(
         label: 'name',
-        initialValue: model?.name ?? '',
+        initialValue: model?.name,
       ),
       address: BusinessFormValue(
         label: 'address',
-        initialValue: model?.address ?? '',
+        initialValue: model?.address,
       ),
     );
   }

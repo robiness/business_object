@@ -36,18 +36,26 @@ class FileAnalyzer {
     return [];
   }
 
-  Iterable<ClassDeclaration> classDeclaration() {
-    final test = session.getParsedUnit(file.path);
-    if (test is ParsedUnitResult) {
-      return test.unit.declarations.reversed.whereType<ClassDeclaration>();
+  Iterable<ClassDeclaration> classDeclarations() {
+    final result = session.getParsedUnit(file.path);
+    if (result is ParsedUnitResult) {
+      return result.unit.declarations.reversed.whereType<ClassDeclaration>();
     }
     return [];
   }
 
   Iterable<String> get importsAsStrings => imports.map((e) => e.toSource());
 
-  Future<ClassElement> classElement() async {
-    return element.classes.first;
+  Future<List<ClassElement>> classElements() async {
+    return element.classes;
+  }
+
+  Future<Iterable<String>> classElementNames() async {
+    return element.classes.map((e) => e.thisType.element.name);
+  }
+
+  Iterable<NamedType?> superClasses() {
+    return classDeclarations().map((e) => e.extendsClause?.superclass);
   }
 }
 
