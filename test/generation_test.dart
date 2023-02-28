@@ -36,8 +36,9 @@ void main() {
     formFile.deleteSync(recursive: true);
   });
 
-  tearDownAll(() {
+  tearDownAll(() async {
     if (generateTestFile) {
+      await modelFile.generateBusinessObject();
       localTestDirectory
           .childFile('test.dart')
           .writeAsStringSync(formFile.readAsStringSync());
