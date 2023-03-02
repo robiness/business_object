@@ -48,6 +48,11 @@ class ExampleForm extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
+                  if (invoiceFormData.formGroup.valid) {
+                    print('Form is valid');
+                  } else {
+                    print('Form is invalid');
+                  }
                   print(invoiceFormData.toString());
                 },
                 child: const Text('Print Invoice Form Data'),
