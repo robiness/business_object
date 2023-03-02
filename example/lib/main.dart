@@ -39,8 +39,21 @@ class ExampleForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: InvoiceForm(
-          invoiceFormData: invoiceFormData,
+        child: Padding(
+          padding: const EdgeInsets.all(48.0),
+          child: Column(
+            children: [
+              InvoiceForm(
+                invoiceFormData: invoiceFormData,
+              ),
+              TextButton(
+                onPressed: () {
+                  print(invoiceFormData.toString());
+                },
+                child: const Text('Print Invoice Form Data'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -82,6 +95,12 @@ class InvoiceForm extends StatelessWidget {
           CustomerForm(
             customerFormData: invoiceFormData.customer,
           ),
+          const SizedBox(
+            height: 30,
+          ),
+          BusinessSelectionField(
+            value: invoiceFormData.status,
+          )
         ],
       ),
     );

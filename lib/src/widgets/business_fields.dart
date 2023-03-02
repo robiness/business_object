@@ -45,3 +45,28 @@ class BusinessNumberField extends StatelessWidget {
     );
   }
 }
+
+class BusinessSelectionField extends StatelessWidget {
+  const BusinessSelectionField({
+    super.key,
+    required this.value,
+  });
+
+  final BusinessSelectionValue value;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField(
+      value: value.control.value,
+      onChanged: (dynamic newValue) => value.control.updateValue(newValue),
+      items: value.businessOptions
+          .map(
+            (item) => DropdownMenuItem(
+              value: item.value,
+              child: Text(item.label),
+            ),
+          )
+          .toList(),
+    );
+  }
+}

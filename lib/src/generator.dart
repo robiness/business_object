@@ -108,6 +108,10 @@ import '${modelFile.name}';
   }
 
   String _getFieldDeclaration(FieldElement field) {
+    if (field.isEnum) {
+      return 'BusinessSelectionValue<${field.type}?> ${field.name};';
+    }
+
     if (field.isObject) {
       return '${field.type}FormData ${field.name};';
     }
@@ -117,6 +121,16 @@ import '${modelFile.name}';
 
   String _getBusinessValuesAssignment(
       FieldElement field, String className, String modelName) {
+    if (field.isEnum) {
+      return '''
+${field.name}: BusinessSelectionValue<${field.type}?>(
+  label: '${field.name}', 
+  initialValue: $modelName?.${field.name}, 
+  options: ${field.type}.values,
+)
+''';
+    }
+
     if (field.isObject) {
       return '''
 ${field.name}: ${field.type}FormData.from${field.name.capitalize()}($modelName?.${field.name}),
@@ -147,8 +161,12 @@ extension FieldElementExtensions on FieldElement {
         !type.isDartCoreInt &&
         !type.isDartCoreDouble &&
         !type.isDartCoreBool &&
-        // First recherche show that enums have an ordinal unequal to 1.
-        type.element!.kind.ordinal == 1;
+        !isEnum;
+  }
+
+  bool get isEnum {
+    // First recherche show that enums have an ordinal unequal to 1.
+    return type.element!.kind.ordinal != 1;
   }
 }
 

@@ -31,6 +31,11 @@ abstract class BusinessFormData<T> extends BusinessObject {
       ...values,
     });
   }
+
+  @override
+  String toString() {
+    return formGroup.value.toString();
+  }
 }
 
 /// A value in a [BusinessObject]
@@ -60,7 +65,13 @@ class BusinessSelectionValue<T> extends BusinessFormValue<T> {
     super.validators,
   });
 
-  final List<BusinessOption> options;
+  final List<T> options;
+
+  List<BusinessOption> get businessOptions {
+    return options.map((e) {
+      return BusinessOption(value: e, label: e.toString());
+    }).toList();
+  }
 }
 
 /// An option in a [BusinessSelectionValue]
