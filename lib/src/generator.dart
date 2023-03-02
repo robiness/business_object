@@ -80,16 +80,16 @@ import '${modelFile.name}';
     }
 
     _content += '''
-\nclass ${className}Form extends BusinessFormData<$className> {
-  ${className}Form({
+\nclass ${className}FormData extends BusinessFormData<$className> {
+  ${className}FormData({
   required super.label,
   $constructorArguments
   }) : ${_getSuperConstructor(classElement)};
 
   $fieldDeclarations
 
-  static BusinessFormData<$className> from$className($className? $modelName) {
-  return ${className}Form(
+  static ${className}FormData from$className($className? $modelName) {
+  return ${className}FormData(
       label: '$className',
     $businessValuesAssignments
     );
@@ -109,7 +109,7 @@ import '${modelFile.name}';
 
   String _getFieldDeclaration(FieldElement field) {
     if (field.isObject) {
-      return 'BusinessFormData<${field.type}?> ${field.name};';
+      return '${field.type}FormData ${field.name};';
     }
 
     return 'BusinessFormValue<${field.type}?> ${field.name};';
@@ -119,7 +119,7 @@ import '${modelFile.name}';
       FieldElement field, String className, String modelName) {
     if (field.isObject) {
       return '''
-${field.name}: ${field.type}Form.from${field.name.capitalize()}($modelName?.${field.name}),
+${field.name}: ${field.type}FormData.from${field.name.capitalize()}($modelName?.${field.name}),
 ''';
     }
     return '''
