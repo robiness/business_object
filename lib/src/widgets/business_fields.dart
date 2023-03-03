@@ -46,7 +46,7 @@ class BusinessNumberField extends StatelessWidget {
   }
 }
 
-class BusinessSelectionField extends StatelessWidget {
+class BusinessSelectionField extends StatefulWidget {
   const BusinessSelectionField({
     super.key,
     required this.value,
@@ -55,11 +55,25 @@ class BusinessSelectionField extends StatelessWidget {
   final BusinessSelectionValue value;
 
   @override
+  State<BusinessSelectionField> createState() => _BusinessSelectionFieldState();
+}
+
+class _BusinessSelectionFieldState extends State<BusinessSelectionField> {
+  @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
-      value: value.control.value,
-      onChanged: (dynamic newValue) => value.control.updateValue(newValue),
-      items: value.businessOptions
+      value: widget.value.control.value,
+      onChanged: (dynamic newValue) {
+        widget.value.control.updateValue(newValue);
+        setState(() {});
+      },
+      decoration: InputDecoration(
+        labelText: widget.value.label,
+        errorText: widget.value.control.hasErrors
+            ? widget.value.control.errors.values.first.toString()
+            : null,
+      ),
+      items: widget.value.businessOptions
           .map(
             (item) => DropdownMenuItem(
               value: item.value,
@@ -67,6 +81,25 @@ class BusinessSelectionField extends StatelessWidget {
             ),
           )
           .toList(),
+    );
+  }
+}
+
+class BusinessSliderField extends StatelessWidget {
+  const BusinessSliderField({
+    super.key,
+    required this.value,
+  });
+
+  final BusinessSelectionValue<double?> value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Slider(
+      value: value.control.value ?? 0,
+      onChanged: (double newValue) {
+        value.control.updateValue(newValue);
+      },
     );
   }
 }

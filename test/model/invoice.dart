@@ -1,5 +1,5 @@
 /*
-Test data to test the generation. The output should be the same as invoice_form.dart
+Test data to test the generation. The output should be the same as invoice_form_data.dart
 */
 class Invoice {
   const Invoice({

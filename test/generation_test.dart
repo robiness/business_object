@@ -10,7 +10,7 @@ void main() {
   late final Directory tmp;
   late final File modelFile;
 
-  late final File formFile = tmp.childFile('invoice_form.dart');
+  late final File formFile = tmp.childFile('invoice_form_data.dart');
   late final Directory localTestDirectory;
 
   // Enable for local testing. A test_output.dart will be generated in the model folder.
@@ -52,7 +52,7 @@ void main() {
       await modelFile.generateBusinessObject();
       expect(
         tmp.fileNames,
-        ['invoice.dart', 'invoice_form.dart'],
+        ['invoice.dart', 'invoice_form_data.dart'],
       );
     });
     test('The business object library gets imported', () async {

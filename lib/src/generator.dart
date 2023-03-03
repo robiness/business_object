@@ -47,7 +47,7 @@ class BusinessFormGenerator {
   /// Creates a file with the model name and a _form suffix.
   static File _createFormFile(File modelFile) {
     return File(
-      '${modelFile.parent.path}/${modelFile.nameWithoutExtension}_form.dart',
+      '${modelFile.parent.path}/${modelFile.nameWithoutExtension}_form_data.dart',
     )..createSync();
   }
 
