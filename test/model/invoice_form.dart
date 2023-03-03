@@ -5,7 +5,7 @@ import 'package:business_object/business_object.dart';
 
 import 'invoice.dart';
 
-class InvoiceForm extends BusinessFormData<Invoice> {
+class InvoiceForm extends BusinessFormGroup<Invoice> {
   InvoiceForm({
     required super.label,
     required this.name,
@@ -16,10 +16,10 @@ class InvoiceForm extends BusinessFormData<Invoice> {
 
   final BusinessFormValue<String?> name;
   final BusinessFormValue<int?> amount;
-  final BusinessFormData<Customer?> customer;
+  final BusinessFormGroup<Customer?> customer;
   final BusinessFormValue<InvoiceStatus?> status;
 
-  static BusinessFormData<Invoice> fromInvoice(Invoice? invoice) {
+  static BusinessFormGroup<Invoice> fromInvoice(Invoice? invoice) {
     return InvoiceForm(
       label: 'invoice',
       name: BusinessFormValue<String?>(
@@ -39,7 +39,7 @@ class InvoiceForm extends BusinessFormData<Invoice> {
   }
 }
 
-class CustomerBusinessObject extends BusinessFormData<Customer> {
+class CustomerBusinessObject extends BusinessFormGroup<Customer> {
   CustomerBusinessObject({
     required super.label,
     required this.name,
@@ -49,7 +49,7 @@ class CustomerBusinessObject extends BusinessFormData<Customer> {
   final BusinessFormValue<String?> name;
   final BusinessFormValue<String?> address;
 
-  static BusinessFormData<Customer> fromCustomer(Customer? model) {
+  static BusinessFormGroup<Customer> fromCustomer(Customer? model) {
     return CustomerBusinessObject(
       label: 'customer',
       name: BusinessFormValue(

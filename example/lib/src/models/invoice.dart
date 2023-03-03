@@ -29,5 +29,3 @@ class Customer {
   final String name;
   final String address;
 }
-
-// Ranges

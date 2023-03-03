@@ -80,7 +80,7 @@ import '${modelFile.name}';
     }
 
     _content += '''
-\nclass ${className}FormData extends BusinessFormData<$className> {
+\nclass ${className}FormData extends BusinessFormGroup<$className> {
   ${className}FormData({
   required super.label,
   $constructorArguments
@@ -166,7 +166,7 @@ extension FieldElementExtensions on FieldElement {
 
   bool get isEnum {
     // First recherche show that enums have an ordinal unequal to 1.
-    return type.element!.kind.ordinal != 1;
+    return type.element!.kind == ElementKind.ENUM;
   }
 }
 

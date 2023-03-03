@@ -7,8 +7,8 @@ abstract class BusinessObject {
   const BusinessObject({required this.label});
 }
 
-abstract class BusinessFormData<T> extends BusinessObject {
-  const BusinessFormData({
+abstract class BusinessFormGroup<T> extends BusinessObject {
+  const BusinessFormGroup({
     required this.content,
     required super.label,
   });
@@ -17,7 +17,7 @@ abstract class BusinessFormData<T> extends BusinessObject {
 
   FormGroup get formGroup {
     final models = Map.fromEntries(
-      content.whereType<BusinessFormData>().map(
+      content.whereType<BusinessFormGroup>().map(
             (e) => MapEntry(e.label, e.formGroup),
           ),
     );
